@@ -14,6 +14,7 @@ using Xamarin.Essentials;
 using Plugin.BLE.Abstractions.Exceptions;
 using System.Linq;
 using Acr.Collections;
+using System.Text;
 
 namespace BLE202.ViewModels
 {
@@ -59,7 +60,7 @@ namespace BLE202.ViewModels
                         }
                     }
                 }
-                UserDialogs.Instance.Toast("Scanning Devices BLE, Please wait 1 chút.");
+                UserDialogs.Instance.Toast("Scanning Devices BLE, Please wait 5s.");
 
                 Items.Clear();
                 var ble = CrossBluetoothLE.Current;
@@ -70,13 +71,17 @@ namespace BLE202.ViewModels
                     Item b = new Item
                     {
                         Text = (a.Device.Name!=null ? a.Device.Name : "Unknown")+ " | MAC: " + a.Device.NativeDevice.ToString(),
-                        Description = a.Device.Rssi.ToString() + " dBm",
+                        Description =a.Device.Rssi.ToString() + " dBm",
                         Id = a.Device.Id.ToString(),
                         Device = a.Device
                     };
-                    if (!Items.Any(x => x.Id == b.Id)) Items.Add(b);
+                    if (!Items.Any(x => x.Id == b.Id) && a.Device.Name != null)
+                    {
+                        Items.Add(b);
+                        DataStore.AddItemAsync(b);
+                    }
                 }; 
-                adapter.ScanTimeout = 10000;
+                adapter.ScanTimeout = 5000;
                 adapter.ScanMode = ScanMode.LowLatency;
                 await adapter.StartScanningForDevicesAsync();
             }
@@ -122,27 +127,55 @@ namespace BLE202.ViewModels
 
                 config.Add("Connect", async () =>
                 {
-                    /*  if (await ConnectDeviceAsync(device))
-                      {
-                          var navigation = Mvx.IoCProvider.Resolve<IMvxNavigationService>();
-                          await navigation.Navigate<ServiceListViewModel, MvxBundle>(new MvxBundle(new Dictionary<string, string> { { DeviceIdKey, device.Device.Id.ToString() } }));
-                      } */
-                    var adapter = CrossBluetoothLE.Current.Adapter;
-                    UserDialogs.Instance.Toast("Try connect to device, please đợi 1 chút !");
-                    
-                    try
-                    {
-                        await adapter.ConnectToDeviceAsync(item.Device);
-                        Acr.UserDialogs.UserDialogs.Instance.Alert("Kết nối thành công, ahihi!", "Ok");
-                    }
-                    catch (DeviceConnectionException ex)
-                    {
-                        UserDialogs.Instance.Toast("Lỗi rồi ahuhu !");
-                    }
-                    catch (Exception ex)
-                    {
-                        UserDialogs.Instance.Toast("Lỗi rồi ahuhu !");
-                    }
+
+                    await Shell.Current.GoToAsync($"{nameof(ItemDetailPage)}?{nameof(ItemDetailViewModel.ItemId)}={item.Id}");
+                    /* 
+                     var adapter = CrossBluetoothLE.Current.Adapter;
+                     UserDialogs.Instance.Toast("Try connect to device, please đợi 1 chút !");
+
+                     try
+                     {
+                         await adapter.ConnectToDeviceAsync(item.Device);
+                         Acr.UserDialogs.UserDialogs.Instance.Alert("Kết nối thành công, ahihi!", "Ok");
+
+                         var services = await item.Device.GetServicesAsync();
+
+                         string t = "";
+                         // Get Only Service type Unknown Service.
+                         for (int i=0; i < services.Count(); i++)
+                             if (services[i].Name.ToLower().CompareTo("unknown service") == 0)
+                             {
+                                 var characteristics = await services[i].GetCharacteristicsAsync();
+
+
+
+                                 for (int j=0; j < characteristics.Count(); j++)
+                                 {
+                                    // t+= characteristics[j].WriteType.ToString()+":"+ characteristics[j].CanRead
+                                    if (characteristics[j].CanWrite == true && characteristics[j].CanUpdate == true && characteristics[j].CanRead == true)
+                                     {
+                                         t += "Connect to Service ID: \r\n" + services[i].Id.ToString() + "\r\n Characteristics ID : \r\n";
+                                         t += characteristics[j].Id.ToString() + "\r\n Send String 'Hello BLE server'";
+                                         var data = Encoding.ASCII.GetBytes("Hello BLE server !!!");
+                                         await characteristics[j].WriteAsync(data);
+                                         Acr.UserDialogs.UserDialogs.Instance.Alert(t, "Ok");
+                                     }
+                                 }
+
+
+                             }
+                         //       UserDialogs.Instance.Toast(characteristics[0]..ToString() +"\r\n dd");
+                     }
+                     catch (DeviceConnectionException ex)
+                     {
+                         UserDialogs.Instance.Toast("Lỗi rồi ahuhu !");
+                     }
+                     catch (Exception ex)
+                     {
+                         UserDialogs.Instance.Toast("Lỗi rồi ahuhu !");
+                     }   
+
+                     */
                 });
                 config.Add("Copy GUID", async () =>
                 {

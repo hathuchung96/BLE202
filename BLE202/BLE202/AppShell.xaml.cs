@@ -11,6 +11,7 @@ namespace BLE202
         public AppShell()
         {
             InitializeComponent();
+            Routing.RegisterRoute(nameof(ItemDetailPage), typeof(ItemDetailPage));
         }
 
     }

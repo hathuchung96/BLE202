@@ -5,10 +5,17 @@
              Title="{Binding Title}">
 
     <StackLayout Spacing="20" Padding="15">
-        <Label Text="Text:" FontSize="Medium" />
         <Label Text="{Binding Text}" FontSize="Small"/>
-        <Label Text="Description:" FontSize="Medium" />
-        <Label Text="{Binding Description}" FontSize="Small"/>
+        <Label Text="{Binding Servicex}" FontSize="Small"/>
+        <Label Text="Characteristic" FontSize="Medium"/>
+        <Label Text="{Binding Characteristic}" FontSize="Small"/>
+
+        <Entry Text="{Binding Messagex}" Placeholder="Input Message" PlaceholderColor="Olive"  />
+        <Button Margin="0,10,0,0" Text="Send Data"
+                        Command="{Binding OpenWebCommand}"
+                        BackgroundColor="{StaticResource Primary}"
+                        TextColor="White" />
+        <Label Text="{Binding DataSend}" FontSize="Small" IsEnabled="False"/>
     </StackLayout>
     
 </ContentPage>
