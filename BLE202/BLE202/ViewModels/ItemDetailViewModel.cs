@@ -80,22 +80,10 @@ namespace BLE202.ViewModels
                 {
                     var data = Encoding.ASCII.GetBytes(Messagex);
                     await Charec.WriteAsync(data);
-                    DataSend += "[Done]Send Message : " + Messagex + " \r\n";
+                    DataSend += "[Write Data] " + Messagex + " \r\n";
                 }
                 else DataSend += "[Error]Plese input message \r\n";
             });
-            /*
-            var minutes = TimeSpan.FromSeconds(2);
-
-            Device.StartTimer(minutes, async () =>
-            {
-
-                var bytes = await Charec.ReadAsync();
-                string result = System.Text.Encoding.UTF8.GetString(bytes);
-                DataSend += "[Respone]Get dataaaa \r\n";
-                return true;
-            });
-            */
         }
 
         public ICommand OpenWebCommand { get; }
@@ -108,14 +96,11 @@ namespace BLE202.ViewModels
                 
                 Id = item.Id;
                 Text = "Device Info: "+ item.Text;
-                        var adapter = CrossBluetoothLE.Current.Adapter;
-                        UserDialogs.Instance.Toast("Try connect to device, please đợi 1 chút !");
-
+                        
                         try
                         {
-                            await adapter.ConnectToDeviceAsync(item.Device);
-                            Acr.UserDialogs.UserDialogs.Instance.Alert("Kết nối thành công, ahihi!", "Ok");
-                            UserDialogs.Instance.Toast("Đang mò gởi data, please đợi 1 chút !");
+                            Acr.UserDialogs.UserDialogs.Instance.Alert("Connect Success!", "Ok");
+                            UserDialogs.Instance.Toast("Try to discover services...");
                             var services = await item.Device.GetServicesAsync();
                             // Get Only Service type Unknown Service.
                             for (int i = 0; i < services.Count(); i++)
@@ -130,10 +115,20 @@ namespace BLE202.ViewModels
                                             Servicex = "Service: " + services[i].Id.ToString();
                                             Characteristic = characteristics[j].Id.ToString();
                                             Charec = characteristics[j];
-                                            var data = Encoding.ASCII.GetBytes("Hello BLE server !!!");                                           
+                                            var data = Encoding.ASCII.GetBytes("Hello Server !!!");                                           
                                             await characteristics[j].WriteAsync(data);
-                                            DataSend += "[Done]Send Message : Hello BLE server !!! \r\n";
-                                        }
+                                            DataSend += "[Write Data] Hello Server !!! \r\n";
+
+
+                                             Charec.ValueUpdated += (o, args) =>
+                                    {
+                                        var bytes = args.Characteristic.Value;
+                                        string result = System.Text.Encoding.UTF8.GetString(bytes);
+                                        DataSend += "[Read Data] " + result + " \r\n";
+                                    };
+
+                                    await Charec.StartUpdatesAsync();
+                                }
                                     }
 
 
@@ -142,17 +137,17 @@ namespace BLE202.ViewModels
                         }
                         catch (DeviceConnectionException ex)
                         {
-                            UserDialogs.Instance.Toast("Lỗi rồi ahuhu !");
+                            UserDialogs.Instance.Toast("Error, please try again.");
                         }
                         catch (Exception ex)
                         {
-                            UserDialogs.Instance.Toast("Lỗi rồi ahuhu !");
-                        }                  
+                    UserDialogs.Instance.Toast("Error, please try again.");
+                }                  
 
             }
             catch (Exception)
             {
-                Debug.WriteLine("Failed to Load Item");
+                UserDialogs.Instance.Toast("Error, please try again.");
             }
         }
     }

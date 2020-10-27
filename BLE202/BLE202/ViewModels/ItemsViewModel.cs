@@ -32,16 +32,13 @@ namespace BLE202.ViewModels
             Title = "BLE Devices";
             Items = new ObservableCollection<Item>();
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
-
             ItemTapped = new Command<Item>(OnItemSelected);
-
-            AddItemCommand = new Command(OnAddItem);
         }
 
         async Task ExecuteLoadItemsCommand()
         {
             IsBusy = true;
-            UserDialogs.Instance.Toast("Scanning Devices BLE, Please wait 1 chút.");
+            UserDialogs.Instance.Toast("Scanning Devices BLE, Please waits.");
 
             try
             {
@@ -55,7 +52,7 @@ namespace BLE202.ViewModels
                         if (permissionResult != PermissionStatus.Granted)
                         {
                             await _userDialogs.AlertAsync("Permission denied. Not scanning.");
-                            UserDialogs.Instance.Toast("Aw, you không cho quyền thì quét cái con chim!");
+                            UserDialogs.Instance.Toast("Aw, You don't have permission for this app.");
                             return;
                         }
                     }
@@ -111,10 +108,6 @@ namespace BLE202.ViewModels
             }
         }
 
-        private async void OnAddItem(object obj)
-        {
-//            await Shell.Current.GoToAsync(nameof(NewItemPage));
-        }
         async void OnItemSelected(Item item)
         {
 
@@ -128,54 +121,10 @@ namespace BLE202.ViewModels
                 config.Add("Connect", async () =>
                 {
 
+                    var adapter = CrossBluetoothLE.Current.Adapter;
+                    UserDialogs.Instance.Toast("Try connect to device, please wait !");
+                    await adapter.ConnectToDeviceAsync(item.Device);
                     await Shell.Current.GoToAsync($"{nameof(ItemDetailPage)}?{nameof(ItemDetailViewModel.ItemId)}={item.Id}");
-                    /* 
-                     var adapter = CrossBluetoothLE.Current.Adapter;
-                     UserDialogs.Instance.Toast("Try connect to device, please đợi 1 chút !");
-
-                     try
-                     {
-                         await adapter.ConnectToDeviceAsync(item.Device);
-                         Acr.UserDialogs.UserDialogs.Instance.Alert("Kết nối thành công, ahihi!", "Ok");
-
-                         var services = await item.Device.GetServicesAsync();
-
-                         string t = "";
-                         // Get Only Service type Unknown Service.
-                         for (int i=0; i < services.Count(); i++)
-                             if (services[i].Name.ToLower().CompareTo("unknown service") == 0)
-                             {
-                                 var characteristics = await services[i].GetCharacteristicsAsync();
-
-
-
-                                 for (int j=0; j < characteristics.Count(); j++)
-                                 {
-                                    // t+= characteristics[j].WriteType.ToString()+":"+ characteristics[j].CanRead
-                                    if (characteristics[j].CanWrite == true && characteristics[j].CanUpdate == true && characteristics[j].CanRead == true)
-                                     {
-                                         t += "Connect to Service ID: \r\n" + services[i].Id.ToString() + "\r\n Characteristics ID : \r\n";
-                                         t += characteristics[j].Id.ToString() + "\r\n Send String 'Hello BLE server'";
-                                         var data = Encoding.ASCII.GetBytes("Hello BLE server !!!");
-                                         await characteristics[j].WriteAsync(data);
-                                         Acr.UserDialogs.UserDialogs.Instance.Alert(t, "Ok");
-                                     }
-                                 }
-
-
-                             }
-                         //       UserDialogs.Instance.Toast(characteristics[0]..ToString() +"\r\n dd");
-                     }
-                     catch (DeviceConnectionException ex)
-                     {
-                         UserDialogs.Instance.Toast("Lỗi rồi ahuhu !");
-                     }
-                     catch (Exception ex)
-                     {
-                         UserDialogs.Instance.Toast("Lỗi rồi ahuhu !");
-                     }   
-
-                     */
                 });
                 config.Add("Copy GUID", async () =>
                 {
