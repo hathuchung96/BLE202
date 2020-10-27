@@ -3,6 +3,7 @@ using nexus.core;
 using nexus.protocols.ble;
 using nexus.protocols.ble.gatt;
 using nexus.protocols.ble.scan;
+using Plugin.BluetoothLE;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -75,30 +76,33 @@ namespace BLE202.ViewModels
             //           Title = "Server BLE";
 
             ButtonStr = "Start Server";
-            OpenWebCommand = new Command(async () => 
+            OpenWebCommand = new Command(async () =>
             {
                 if (ButtonStr == "Start Server")
                 {
                     ButtonStr = "Stop Server";
                     LogStr += "Start Server \r\n";
-                  
-
-
 
                 }
-                else 
+                else
                 {
                     ButtonStr = "Start Server";
                     LogStr += "Stop Server \r\n";
                 }
             });
             // Acr.UserDialogs.UserDialogs.Instance.Alert("This page not hoàn thành yet, quay lại sau nhé :)", "Ok");
+            MessagingCenter.Subscribe<string>(this, "eventName", (label) => {
+                // do something whenever the message is sent
+                Device.BeginInvokeOnMainThread(() => {
+                    LogStr += label;
+                });
+            });
 
-
-        }    
+        }
 
         public ICommand OpenWebCommand { get; }
-   
+
 
     }
+  
 }
