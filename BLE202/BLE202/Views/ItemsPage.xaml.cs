@@ -21,13 +21,13 @@ namespace BLE202.Views
         {
             InitializeComponent();
 
-            BindingContext = _viewModel = new ItemsViewModel();
+            BindingContext = _viewModel = new ItemsViewModel();   
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            _viewModel.OnAppearing();
+            _viewModel.OnAppearing();      
         }
     }
 }

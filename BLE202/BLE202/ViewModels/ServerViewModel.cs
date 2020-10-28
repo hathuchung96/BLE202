@@ -74,7 +74,7 @@ namespace BLE202.ViewModels
         public ServerViewModel()
         {
             //           Title = "Server BLE";
-
+          
             ButtonStr = "Start Server";
             OpenWebCommand = new Command(async () =>
             {
@@ -82,7 +82,7 @@ namespace BLE202.ViewModels
                 {
                     ButtonStr = "Stop Server";
                     LogStr += "Start Server \r\n";
-
+                    MessagingCenter.Send<BLE202.App,string>((BLE202.App)Xamarin.Forms.Application.Current, "Hi","Send Data from ViewModel to MainActivity by MessagingCenter");
                 }
                 else
                 {

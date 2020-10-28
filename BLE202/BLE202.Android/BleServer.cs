@@ -27,7 +27,6 @@ namespace BLE202.Droid
 
         public BleServer(Context ctx)
         {
-            Xamarin.Forms.MessagingCenter.Send("hahahahah", "eventName");
             _bluetoothManager = (BluetoothManager)ctx.GetSystemService(Context.BluetoothService);
             _bluetoothAdapter = _bluetoothManager.Adapter;
 

@@ -34,9 +34,12 @@ namespace BLE202.ViewModels
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
             ItemTapped = new Command<Item>(OnItemSelected);
         }
-
         async Task ExecuteLoadItemsCommand()
         {
+            System.Diagnostics.Debug.WriteLine("34343");
+
+           
+
             IsBusy = true;
             UserDialogs.Instance.Toast("Scanning Devices BLE, Please waits.");
 

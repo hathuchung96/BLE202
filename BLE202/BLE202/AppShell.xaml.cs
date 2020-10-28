@@ -12,6 +12,7 @@ namespace BLE202
         {
             InitializeComponent();
             Routing.RegisterRoute(nameof(ItemDetailPage), typeof(ItemDetailPage));
+
         }
 
     }
