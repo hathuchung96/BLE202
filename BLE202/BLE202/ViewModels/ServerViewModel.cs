@@ -74,21 +74,16 @@ namespace BLE202.ViewModels
         public ServerViewModel()
         {
             //           Title = "Server BLE";
-          
-            ButtonStr = "Start Server";
+            MessagingCenter.Subscribe<App, string>((App)global::Xamarin.Forms.Application.Current, "Hi", async (sender, arg) => {
+                LogStr += arg.ToString() +"\r\n";
+            });
+            ButtonStr = "Send Message";
             OpenWebCommand = new Command(async () =>
             {
-                if (ButtonStr == "Start Server")
-                {
-                    ButtonStr = "Stop Server";
-                    LogStr += "Start Server \r\n";
-                    MessagingCenter.Send<BLE202.App,string>((BLE202.App)Xamarin.Forms.Application.Current, "Hi","Send Data from ViewModel to MainActivity by MessagingCenter");
-                }
-                else
-                {
-                    ButtonStr = "Start Server";
-                    LogStr += "Stop Server \r\n";
-                }
+
+
+                MessagingCenter.Send<BLE202.App, string>((BLE202.App)Xamarin.Forms.Application.Current, "GetValuex", "Send Messageaaa");
+              
             });
             // Acr.UserDialogs.UserDialogs.Instance.Alert("This page not hoàn thành yet, quay lại sau nhé :)", "Ok");
             MessagingCenter.Subscribe<string>(this, "eventName", (label) => {

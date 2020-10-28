@@ -78,9 +78,15 @@ namespace BLE202.ViewModels
             {
                 if (Messagex != null)
                 {
-                    var data = Encoding.ASCII.GetBytes(Messagex);
-                    await Charec.WriteAsync(data);
-                    DataSend += "[Write Data] " + Messagex + " \r\n";
+                    try
+                    {
+                        var data = Encoding.ASCII.GetBytes(Messagex);
+                        await Charec.WriteAsync(data);
+                        DataSend += "[Write Data] " + Messagex + " \r\n";
+                    } catch (Exception ex)
+                    {
+                        DataSend += "[Error]Can not send message \r\n";
+                    }
                 }
                 else DataSend += "[Error]Plese input message \r\n";
             });

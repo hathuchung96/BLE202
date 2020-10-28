@@ -26,12 +26,11 @@ namespace BLE202.Droid
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             UserDialogs.Init(this);
 
-            //   _bleServer = new BleServer(this.ApplicationContext);
+            _bleServer = new BleServer(this.ApplicationContext);
             LoadApplication(new App());
+            _bleServer.SetupMesss();
 
-            MessagingCenter.Subscribe<App,string>((App)global::Xamarin.Forms.Application.Current, "Hi", async (sender, arg) => {
-                System.Diagnostics.Debug.WriteLine("get hi !!!" + arg.ToString());
-            });
+
 
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
