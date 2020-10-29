@@ -126,7 +126,7 @@ namespace BLE202.ViewModels
                                             var data = Encoding.ASCII.GetBytes("Hello Server !!!");                                           
                                             await characteristics[j].WriteAsync(data);
                                             DataSend += "[Write Data] Hello Server !!! \r\n";
-                                /*
+                                
                                 characteristics[j].ValueUpdated += (o, args) =>
                                     {
                                         var bytes = args.Characteristic.Value;
@@ -134,7 +134,7 @@ namespace BLE202.ViewModels
                                         DataSend += "[Read Data] " + result + " \r\n";
                                     };
 
-                                    await characteristics[j].StartUpdatesAsync(); */
+                                    await characteristics[j].StartUpdatesAsync(); 
                                 checks = true;
                                 }
                             if (checks) break;

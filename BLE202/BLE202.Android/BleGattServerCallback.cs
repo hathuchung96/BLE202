@@ -26,7 +26,8 @@ namespace BLE202.Droid
         public BluetoothGattDescriptor Descriptor { get; set; }
 
         public bool PreparedWrite { get; set; }
-
+        public ProfileState NewState { get; set; }
+        public bool ResponseNeeded { get; set; }
     }
 
     public class BleGattServerCallback : BluetoothGattServerCallback
@@ -36,12 +37,16 @@ namespace BLE202.Droid
         public event EventHandler<BleEventArgs> CharacteristicReadRequest;
         public event EventHandler<BleEventArgs> DescriptorWriteRequest;
         public event EventHandler<BleEventArgs> CharacteristicWriteRequest;
+        public event EventHandler<BleEventArgs> ConnectionStateChange;
         public BleGattServerCallback()
         {
 
         }
 
-        public override void OnCharacteristicReadRequest(BluetoothDevice device, int requestId, int offset,
+        public override void OnCharacteristicReadRequest(
+            BluetoothDevice device, 
+            int requestId, 
+            int offset,
             BluetoothGattCharacteristic characteristic)
         {
             base.OnCharacteristicReadRequest(device, requestId, offset, characteristic);
@@ -49,38 +54,66 @@ namespace BLE202.Droid
 
             if (CharacteristicReadRequest != null)
             {
-                CharacteristicReadRequest(this, new BleEventArgs() { Device = device, Characteristic = characteristic, RequestId = requestId, Offset = offset });
+                CharacteristicReadRequest(this, new BleEventArgs() { 
+                    Device = device, 
+                    Characteristic = characteristic, 
+                    RequestId = requestId, 
+                    Offset = offset });
             }
         }
 
-        public override void OnCharacteristicWriteRequest(BluetoothDevice device, int requestId, BluetoothGattCharacteristic characteristic,
-            bool preparedWrite, bool responseNeeded, int offset, byte[] value)
+        public override void OnCharacteristicWriteRequest(
+            BluetoothDevice device, 
+            int requestId,
+            BluetoothGattCharacteristic characteristic,
+            bool preparedWrite, 
+            bool responseNeeded, 
+            int offset, 
+            byte[] value)
         {
             base.OnCharacteristicWriteRequest(device, requestId, characteristic, preparedWrite, responseNeeded, offset, value);
             if (CharacteristicWriteRequest != null)
             {
-                CharacteristicWriteRequest(this, new BleEventArgs() { Device = device, RequestId = requestId, Characteristic = characteristic,
-                    PreparedWrite = preparedWrite, Offset = offset, Value = value });
+                CharacteristicWriteRequest(this, new BleEventArgs() { 
+                    Device = device,
+                    ResponseNeeded = responseNeeded, 
+                    RequestId = requestId, 
+                    Characteristic = characteristic,
+                    PreparedWrite = preparedWrite, 
+                    Offset = offset, 
+                    Value = value });
             }      
         }
 
         public override void OnConnectionStateChange(BluetoothDevice device, ProfileState status, ProfileState newState)
         {
             base.OnConnectionStateChange(device, status, newState);
-            MessagingCenter.Send<BLE202.App, string>((BLE202.App)Xamarin.Forms.Application.Current, "Hi", "["+ newState.ToString()+ " Device]Mac:  "+ device.Address.ToString());
+            ConnectionStateChange(this, new BleEventArgs() { Device = device, NewState = newState });
+
         }
         public override void OnDescriptorReadRequest(BluetoothDevice device, int requestId, int offset, BluetoothGattDescriptor descriptor)
         {
             base.OnDescriptorReadRequest(device, requestId, offset, descriptor);
             MessagingCenter.Send<BLE202.App, string>((BLE202.App)Xamarin.Forms.Application.Current, "Hi", "read Value descr: ");
         }
-        public override void OnDescriptorWriteRequest(BluetoothDevice device, int requestId, BluetoothGattDescriptor descriptor, bool preparedWrite,
-            bool responseNeeded, int offset, byte[] value)
+        public override void OnDescriptorWriteRequest(
+            BluetoothDevice device, 
+            int requestId, 
+            BluetoothGattDescriptor descriptor, 
+            bool preparedWrite,
+            bool responseNeeded, 
+            int offset, 
+            byte[] value)
         {
             base.OnDescriptorWriteRequest(device, requestId, descriptor, preparedWrite, responseNeeded, offset, value);
             if (DescriptorWriteRequest != null)
             {
-                DescriptorWriteRequest(this, new BleEventArgs() { Device = device, RequestId = requestId, Descriptor = descriptor, PreparedWrite = preparedWrite,
+                DescriptorWriteRequest(this, new BleEventArgs() { 
+                    Device = device,
+                    RequestId = requestId, 
+                    Descriptor = descriptor,
+                    PreparedWrite = preparedWrite,
+                    ResponseNeeded = responseNeeded,
                     Offset = offset, Value = value });
             }
         }
@@ -92,7 +125,6 @@ namespace BLE202.Droid
         public override void OnNotificationSent(BluetoothDevice device, GattStatus status)
         {
             base.OnNotificationSent(device, status);
-            MessagingCenter.Send<BLE202.App, string>((BLE202.App)Xamarin.Forms.Application.Current, "Hi", "wrinotify te Value descr: ");
           
         }
 

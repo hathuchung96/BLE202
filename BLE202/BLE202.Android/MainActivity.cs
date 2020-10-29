@@ -28,9 +28,6 @@ namespace BLE202.Droid
 
             _bleServer = new BleServer(this.ApplicationContext);
             LoadApplication(new App());
-            _bleServer.SetupMesss();
-
-
 
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
