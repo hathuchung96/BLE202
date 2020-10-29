@@ -45,9 +45,9 @@ namespace BLE202.Droid
             _bluettothServerCallback.CharacteristicReadRequest += _bluettothServerCallback_CharacteristicReadRequest;
             _bluettothServerCallback.DescriptorWriteRequest += _bluettothServerCallback_DescriptorWriteRequest;
             _bluettothServerCallback.CharacteristicWriteRequest += _bluettothServerCallback_CharacteristicWriteRequest;
-            //           _bluettothServerCallback.NotificationSent += _bluettothServerCallback_NotificationSent;
+            _bluettothServerCallback.NotificationSent += _bluettothServerCallback_NotificationSent;
             //           MessagingCenter.Send<BLE202.App, string>((BLE202.App)Xamarin.Forms.Application.Current, "Hi", "Server created!");
-            _bluetoothAdapter.SetName("Concungungoc");
+ //           _bluetoothAdapter.SetName("Concungungoc");
             BluetoothLeAdvertiser myBluetoothLeAdvertiser = _bluetoothAdapter.BluetoothLeAdvertiser;
             var builder = new AdvertiseSettings.Builder();
             builder.SetAdvertiseMode(AdvertiseMode.LowLatency);
@@ -58,22 +58,26 @@ namespace BLE202.Droid
             dataBuilder.SetIncludeDeviceName(true);
             //dataBuilder.AddServiceUuid(ParcelUuid.FromString("ffe0ecd2-3d16-4f8d-90de-e89e7fc396a5"));
             dataBuilder.SetIncludeTxPowerLevel(true);
-
             myBluetoothLeAdvertiser.StartAdvertising(builder.Build(), dataBuilder.Build(), new BleAdvertiseCallback());
         }
         public void SetupMesss()
         {
-            MessagingCenter.Subscribe<App, string>((App)global::Xamarin.Forms.Application.Current, "GetValuex", async (sender, arg) => {
-                  if (et != null)
-                  {
-                      et.Characteristic.SetValue(arg.ToString());
-                      MessagingCenter.Send<BLE202.App, string>((BLE202.App)Xamarin.Forms.Application.Current, "Hi", arg.ToString());
-                      _bluetoothServer.SendResponse(et.Device, et.RequestId, GattStatus.Success, et.Offset, et.Characteristic.GetValue());
-                  }
-            });
+            try
+            {
+                MessagingCenter.Subscribe<App, string>((App)global::Xamarin.Forms.Application.Current, "GetValuex", async (sender, arg) =>
+                {
+                    if (et != null)
+                    {
+                        et.Characteristic.SetValue(arg.ToString());
+                        MessagingCenter.Send<BLE202.App, string>((BLE202.App)Xamarin.Forms.Application.Current, "Hi", arg.ToString());
+                        _bluetoothServer.SendResponse(et.Device, et.RequestId, GattStatus.Success, et.Offset, et.Characteristic.GetValue());
+                    }
+                });
+            } catch (Exception ex)
+            {
+
+            }
         }
-        private int _count = 0;
-        private Stopwatch _sw = new Stopwatch();
 
         void _bluettothServerCallback_NotificationSent(object sender, BleEventArgs e)
         {
@@ -125,22 +129,34 @@ namespace BLE202.Droid
         }
         void _bluettothServerCallback_DescriptorWriteRequest(object sender, BleEventArgs e)
         {
+            try { 
             e.Characteristic.SetValue(String.Format("Thanks for message"));
             string result = System.Text.Encoding.UTF8.GetString(e.Value);
             MessagingCenter.Send<BLE202.App, string>((BLE202.App)Xamarin.Forms.Application.Current, "Hi", "[Read]: " + result);
             _bluetoothServer.SendResponse(e.Device, e.RequestId, GattStatus.Success, e.Offset, e.Characteristic.GetValue());
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
         void _bluettothServerCallback_CharacteristicWriteRequest(object sender, BleEventArgs e)
         {
+            try { 
             e.Characteristic.SetValue(String.Format("Thanks for message"));
             string result = System.Text.Encoding.UTF8.GetString(e.Value);
             MessagingCenter.Send<BLE202.App, string>((BLE202.App)Xamarin.Forms.Application.Current, "Hi", "[Read]: " + result);
             _bluetoothServer.SendResponse(e.Device, e.RequestId, GattStatus.Success, e.Offset, e.Characteristic.GetValue());
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
         void _bluettothServerCallback_ConnectionStateChange(object sender, BleEventArgs e)
         {
-            et = e;
+//            et = e;
             MessagingCenter.Send<BLE202.App, string>((BLE202.App)Xamarin.Forms.Application.Current, "Hi", "New Device Connect ");
 
         }

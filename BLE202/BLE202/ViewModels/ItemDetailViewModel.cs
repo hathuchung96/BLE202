@@ -85,7 +85,8 @@ namespace BLE202.ViewModels
                         DataSend += "[Write Data] " + Messagex + " \r\n";
                     } catch (Exception ex)
                     {
-                        DataSend += "[Error]Can not send message \r\n";
+                        DataSend += Charec.Id.ToString() +" \r\n";
+                        DataSend += "[Error]Can not send message"+ ex.ToString() + " \r\n";
                     }
                 }
                 else DataSend += "[Error]Plese input message \r\n";
@@ -102,18 +103,19 @@ namespace BLE202.ViewModels
                 
                 Id = item.Id;
                 Text = "Device Info: "+ item.Text;
-                        
+                bool checks = false;
                         try
                         {
                             Acr.UserDialogs.UserDialogs.Instance.Alert("Connect Success!", "Ok");
                             UserDialogs.Instance.Toast("Try to discover services...");
+                            DataSend += "Try to discover services...\r\n";
                             var services = await item.Device.GetServicesAsync();
                             // Get Only Service type Unknown Service.
                             for (int i = 0; i < services.Count(); i++)
-                                if (services[i].Name.ToLower().CompareTo("unknown service") == 0)
+                               // if (services[i].Name.ToLower().CompareTo("unknown service") == 0)
                                 {
-                                    var characteristics = await services[i].GetCharacteristicsAsync();
-                                    
+                            var characteristics = await services[i].GetCharacteristicsAsync();
+                            
                                     for (int j = 0; j < characteristics.Count(); j++)
                                     {
                                 if (characteristics[j].CanWrite == true && characteristics[j].CanUpdate == true && characteristics[j].CanRead == true)
@@ -124,20 +126,21 @@ namespace BLE202.ViewModels
                                             var data = Encoding.ASCII.GetBytes("Hello Server !!!");                                           
                                             await characteristics[j].WriteAsync(data);
                                             DataSend += "[Write Data] Hello Server !!! \r\n";
-
-
-                                             Charec.ValueUpdated += (o, args) =>
+                                /*
+                                characteristics[j].ValueUpdated += (o, args) =>
                                     {
                                         var bytes = args.Characteristic.Value;
                                         string result = System.Text.Encoding.UTF8.GetString(bytes);
                                         DataSend += "[Read Data] " + result + " \r\n";
                                     };
 
-                                    await Charec.StartUpdatesAsync();
+                                    await characteristics[j].StartUpdatesAsync(); */
+                                checks = true;
                                 }
+                            if (checks) break;
                                     }
 
-
+                        if (checks) break;
                                 }
                             //       UserDialogs.Instance.Toast(characteristics[0]..ToString() +"\r\n dd");
                         }

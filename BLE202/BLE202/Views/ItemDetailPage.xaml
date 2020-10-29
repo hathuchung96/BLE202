@@ -15,7 +15,9 @@
                         Command="{Binding OpenWebCommand}"
                         BackgroundColor="{StaticResource Primary}"
                         TextColor="White" />
-        <Label Text="{Binding DataSend}" FontSize="Small" IsEnabled="False"/>
+        <ScrollView>
+            <Label Text="{Binding DataSend}" FontSize="Small" IsEnabled="False" HorizontalOptions="FillAndExpand" />
+        </ScrollView>
     </StackLayout>
     
 </ContentPage>
