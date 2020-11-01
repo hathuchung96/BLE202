@@ -8,6 +8,7 @@ using Android.Widget;
 using Android.OS;
 using Acr.UserDialogs;
 using Xamarin.Forms;
+using nexus.protocols.ble;
 
 namespace BLE202.Droid
 {
@@ -27,8 +28,9 @@ namespace BLE202.Droid
             UserDialogs.Init(this);
 
             _bleServer = new BleServer(this.ApplicationContext);
-            LoadApplication(new App());
-            _bleServer.SetupMesss();
+            var bluetooth = BluetoothLowEnergyAdapter.ObtainDefaultAdapter(ApplicationContext);
+
+            LoadApplication(new App(bluetooth, UserDialogs.Instance));
 
 
 

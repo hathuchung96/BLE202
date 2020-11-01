@@ -4,18 +4,49 @@
              x:Class="BLE202.Views.ItemDetailPage"
              Title="{Binding Title}">
 
-    <StackLayout Spacing="20" Padding="15">
-        <Label Text="{Binding Text}" FontSize="Small"/>
-        <Label Text="{Binding Servicex}" FontSize="Small"/>
-        <Label Text="Characteristic" FontSize="Medium"/>
-        <Label Text="{Binding Characteristic}" FontSize="Small"/>
+    <StackLayout Spacing="20" Padding="15" BackgroundColor="WhiteSmoke">
+        <Grid RowSpacing="5" BackgroundColor="White">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-        <Entry Text="{Binding Messagex}" Placeholder="Input Message" PlaceholderColor="Olive"  />
+            <Label Grid.Column="0"
+                               Grid.Row="0"
+                               Text="Device "
+                               FontAttributes="Bold" TextColor="Black"/>
+            <Label Grid.Column="0"
+                               Grid.Row="1"
+                               Text="Service "
+                               FontAttributes="Bold" TextColor="Black"/>
+            <Label Grid.Column="0"
+                               Grid.Row="2"
+                               Text="Characteristic "
+                               FontAttributes="Bold" TextColor="Black"/>
+
+            <Label Grid.Column="1"
+                               Grid.Row="0"
+                               Text="{Binding Text}" TextColor="Black" />
+            <Label Grid.Column="1"
+                               Grid.Row="1"
+                               Text="{Binding Servicex}" TextColor="Black" />
+            <Label Grid.Column="1"
+                               Grid.Row="2"
+                               Text="{Binding Characteristic}" TextColor="Black"/>
+        </Grid>
+        <Entry Text="{Binding Messagex}" Placeholder="Input Message" PlaceholderColor="Olive"  TextColor="Black" />
         <Button Margin="0,10,0,0" Text="Send Data"
                         Command="{Binding OpenWebCommand}"
                         BackgroundColor="{StaticResource Primary}"
                         TextColor="White" />
-        <Label Text="{Binding DataSend}" FontSize="Small" IsEnabled="False"/>
+        <ScrollView Grid.Row="1" BackgroundColor="White">
+            <Label Text="{Binding DataSend}" FontSize="Small" IsEnabled="False" HorizontalOptions="FillAndExpand" TextColor="Black" />
+        </ScrollView>
     </StackLayout>
     
 </ContentPage>

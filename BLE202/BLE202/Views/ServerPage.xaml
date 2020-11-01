@@ -15,20 +15,17 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <ScrollView Grid.Row="1">
-            <StackLayout Orientation="Vertical" Padding="30,24,30,24" Spacing="10">
+    <StackLayout Spacing="20" Padding="15">
+        
+              <!--  <Entry Text="{Binding Messagex}" Placeholder="Input Message" PlaceholderColor="Olive"  />
                 <Button Margin="0,10,0,0" Text="{Binding ButtonStr}"
                         Command="{Binding OpenWebCommand}"
                         BackgroundColor="{StaticResource Primary}"
-                        TextColor="White" />
-                <Label Text="{Binding LogStr}" HorizontalOptions="FillAndExpand" />
-            </StackLayout>
+                        TextColor="White"  IsEnabled="False"/> -->
+        <ScrollView Grid.Row="1" BackgroundColor="WhiteSmoke">
+            <Label Text="{Binding LogStr}" HorizontalOptions="FillAndExpand" TextColor="Black"/>
+            
         </ScrollView>
-    </Grid>
+    </StackLayout>
 
 </ContentPage>

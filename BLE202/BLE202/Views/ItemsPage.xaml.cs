@@ -21,13 +21,26 @@ namespace BLE202.Views
         {
             InitializeComponent();
 
-            BindingContext = _viewModel = new ItemsViewModel();   
+            BindingContext = _viewModel = new ItemsViewModel();
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            _viewModel.OnAppearing();      
+            _viewModel.OnAppearing();
+        }
+
+        private void ListView_OnItemSelected(Object sender, SelectedItemChangedEventArgs e)
+        {
+            if (e.SelectedItem != null)
+            {
+                //((BlePeripheralViewModel)e.SelectedItem).IsExpanded = !((BlePeripheralViewModel)e.SelectedItem).IsExpanded;
+                ((ListView)sender).SelectedItem = null;
+            }
+        }
+
+        private void ListView_OnItemTapped(Object sender, ItemTappedEventArgs e)
+        {
         }
     }
 }

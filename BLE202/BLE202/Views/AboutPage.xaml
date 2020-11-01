@@ -27,11 +27,11 @@
                 </ContentView>
             </StackLayout>
         </StackLayout>
-        <ScrollView Grid.Row="1">
+        <ScrollView Grid.Row="1" >
             <StackLayout Orientation="Vertical" Padding="30,24,30,24" Spacing="10">
-                <Label Text="BLE Client and Server" FontSize="Title"/>
-                <Label Text="Test connect from Client to Server by BLE, that so cool." FontSize="16" Padding="0,0,0,0"/>
-                <Label FontSize="16" Padding="0,24,0,0">
+                <Label Text="BLE Client and Server" FontSize="Title" TextColor="Black"/>
+                <Label Text="Test connect from Client to Server by BLE, that so cool." FontSize="16" Padding="0,0,0,0" TextColor="Black"/>
+                <Label FontSize="16" Padding="0,24,0,0" TextColor="Black">
                     <Label.FormattedText>
                         <FormattedString>
                             <FormattedString.Spans>

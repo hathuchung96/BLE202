@@ -70,7 +70,16 @@ namespace BLE202.ViewModels
                 OnPropertyChanged();
             }
         }
-
+        private string messagex;
+        public string Messagex
+        {
+            get { return messagex; }
+            set
+            {
+                messagex = value;
+                OnPropertyChanged();
+            }
+        }
         public ServerViewModel()
         {
             //           Title = "Server BLE";
@@ -81,8 +90,9 @@ namespace BLE202.ViewModels
             OpenWebCommand = new Command(async () =>
             {
 
-
-                MessagingCenter.Send<BLE202.App, string>((BLE202.App)Xamarin.Forms.Application.Current, "GetValuex", "Send Messageaaa");
+                if (Messagex != null)
+                    MessagingCenter.Send<BLE202.App, string>((BLE202.App)Xamarin.Forms.Application.Current, "GetValuex", Messagex);
+                else LogStr += "[Write] Please Input Message \r\n";
               
             });
             // Acr.UserDialogs.UserDialogs.Instance.Alert("This page not hoàn thành yet, quay lại sau nhé :)", "Ok");

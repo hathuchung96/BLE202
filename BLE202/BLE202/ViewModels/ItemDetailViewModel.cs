@@ -83,7 +83,8 @@ namespace BLE202.ViewModels
                         var data = Encoding.ASCII.GetBytes(Messagex);
                         await Charec.WriteAsync(data);
                         DataSend += "[Write Data] " + Messagex + " \r\n";
-                    } catch (Exception ex)
+                    }
+                    catch (Exception ex)
                     {
                         DataSend += "[Error]Can not send message \r\n";
                     }
@@ -99,56 +100,47 @@ namespace BLE202.ViewModels
             {
                 Debug.WriteLine(itemId);
                 var item = await DataStore.GetItemAsync(itemId);
-                
+
                 Id = item.Id;
-                Text = "Device Info: "+ item.Text;
-                        
-                        try
-                        {
-                            Acr.UserDialogs.UserDialogs.Instance.Alert("Connect Success!", "Ok");
-                            UserDialogs.Instance.Toast("Try to discover services...");
-                            var services = await item.Device.GetServicesAsync();
-                            // Get Only Service type Unknown Service.
-                            for (int i = 0; i < services.Count(); i++)
-                                if (services[i].Name.ToLower().CompareTo("unknown service") == 0)
+                Text =item.AddressAndName;
+                bool checks = false;
+                try
+                {
+                    Acr.UserDialogs.UserDialogs.Instance.Alert("Connect Success!", "Ok");
+                    DataSend += "Try to discover services...\r\n";
+                    // Get Only Service type Unknown Service.
+                    foreach (var service in await item.Device.GetServicesAsync())
+                    {
+                        foreach (var characteristic in await service.GetCharacteristicsAsync())
+                            if (characteristic.CanWrite && characteristic.CanUpdate && characteristic.CanRead && !checks)
+                            {
+                                 Servicex =service.Id.ToString();
+                                 Characteristic = characteristic.Id.ToString();
+                                 Charec = characteristic;
+                                 var data = Encoding.ASCII.GetBytes("[] Hello Server ~~~");
+                                 await characteristic.WriteAsync(data);
+                                 DataSend += "[Write Data] Hello Server ~~~\r\n";
+
+                                /*characteristic.ValueUpdated += (o, args) =>
                                 {
-                                    var characteristics = await services[i].GetCharacteristicsAsync();
-                                    
-                                    for (int j = 0; j < characteristics.Count(); j++)
-                                    {
-                                if (characteristics[j].CanWrite == true && characteristics[j].CanUpdate == true && characteristics[j].CanRead == true)
-                                {
-                                            Servicex = "Service: " + services[i].Id.ToString();
-                                            Characteristic = characteristics[j].Id.ToString();
-                                            Charec = characteristics[j];
-                                            var data = Encoding.ASCII.GetBytes("Hello Server !!!");                                           
-                                            await characteristics[j].WriteAsync(data);
-                                            DataSend += "[Write Data] Hello Server !!! \r\n";
+                                    var bytes = args.Characteristic.Value;
+                                    string result = System.Text.Encoding.UTF8.GetString(bytes);
+                                    DataSend += "[Read Data] " + result + " \r\n";
+                                };
 
-
-                                             Charec.ValueUpdated += (o, args) =>
-                                    {
-                                        var bytes = args.Characteristic.Value;
-                                        string result = System.Text.Encoding.UTF8.GetString(bytes);
-                                        DataSend += "[Read Data] " + result + " \r\n";
-                                    };
-
-                                    await Charec.StartUpdatesAsync();
-                                }
-                                    }
-
-
-                                }
-                            //       UserDialogs.Instance.Toast(characteristics[0]..ToString() +"\r\n dd");
-                        }
-                        catch (DeviceConnectionException ex)
-                        {
-                            UserDialogs.Instance.Toast("Error, please try again.");
-                        }
-                        catch (Exception ex)
-                        {
+                                await characteristic.StartUpdatesAsync();*/
+                                checks = true;
+                            }
+                    }
+                }
+                catch (DeviceConnectionException ex)
+                {
                     UserDialogs.Instance.Toast("Error, please try again.");
-                }                  
+                }
+                catch (Exception ex)
+                {
+                    UserDialogs.Instance.Toast("Error, please try again.");
+                }
 
             }
             catch (Exception)
