@@ -23,7 +23,8 @@ namespace BLE202.ViewModels
         private string text;
         private string messagex;
         private string dataa;
-        private string itemcharacteristic;
+        private string itemwritecharacteristic;
+        private string itemreadcharacteristic;
         private ICharacteristic charec;
         public string Id { get; set; }
 
@@ -37,10 +38,15 @@ namespace BLE202.ViewModels
             get => messagex;
             set => SetProperty(ref messagex, value);
         }
-        public string Characteristic
+        public string WriteCharacteristic
         {
-            get => itemcharacteristic;
-            set => SetProperty(ref itemcharacteristic, value);
+            get => itemwritecharacteristic;
+            set => SetProperty(ref itemwritecharacteristic, value);
+        }
+        public string ReadCharacteristic
+        {
+            get => itemreadcharacteristic;
+            set => SetProperty(ref itemreadcharacteristic, value);
         }
         public string DataSend
         {
@@ -103,7 +109,8 @@ namespace BLE202.ViewModels
 
                 Id = item.Id;
                 Text =item.AddressAndName;
-                bool checks = false;
+                bool checkswrite = false;
+                bool checksread = false;
                 try
                 {
                     Acr.UserDialogs.UserDialogs.Instance.Alert("Connect Success!", "Ok");
@@ -112,25 +119,38 @@ namespace BLE202.ViewModels
                     foreach (var service in await item.Device.GetServicesAsync())
                     {
                         foreach (var characteristic in await service.GetCharacteristicsAsync())
-                            if (characteristic.CanWrite && characteristic.CanUpdate && characteristic.CanRead && !checks)
+                        {
+                            if (characteristic.CanWrite && characteristic.CanUpdate && characteristic.CanRead)
                             {
-                                 Servicex =service.Id.ToString();
-                                 Characteristic = characteristic.Id.ToString();
-                                 Charec = characteristic;
-                                 var data = Encoding.ASCII.GetBytes("[] Hello Server ~~~");
-                                 await characteristic.WriteAsync(data);
-                                 DataSend += "[Write Data] Hello Server ~~~\r\n";
-
-                                /*characteristic.ValueUpdated += (o, args) =>
+                                if (!checkswrite)
                                 {
-                                    var bytes = args.Characteristic.Value;
-                                    string result = System.Text.Encoding.UTF8.GetString(bytes);
-                                    DataSend += "[Read Data] " + result + " \r\n";
-                                };
+                                    Servicex = service.Id.ToString();
+                                    WriteCharacteristic = characteristic.Id.ToString();
+                                    Charec = characteristic;
+                                    var data = Encoding.ASCII.GetBytes("Hello Server ~~~");
+                                    await characteristic.WriteAsync(data);
+                                    DataSend += "[Write Data] Hello Server ~~~\r\n";
+                                    checkswrite = true;
+                                } else if (!checksread)
+                                {
+                                    ReadCharacteristic = characteristic.Id.ToString();
+                                    var cagsxc = characteristic;
+                                    Task taskA = Task.Run(async () =>
+                                    {
+                                        cagsxc.ValueUpdated += (o, args) =>
+                                        {
+                                            var bytes = args.Characteristic.Value;
+                                            string result = System.Text.Encoding.UTF8.GetString(bytes);
+                                            DataSend += "[Read Data] " + result + " \r\n";
+                                        };
 
-                                await characteristic.StartUpdatesAsync();*/
-                                checks = true;
+                                    });
+
+                                    checksread = true;
+                                }
+
                             }
+                        }
                     }
                 }
                 catch (DeviceConnectionException ex)

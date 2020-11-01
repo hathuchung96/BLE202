@@ -25,6 +25,7 @@ namespace BLE202.Droid
         private BleGattServerCallback _bluettothServerCallback;
         private BluetoothGattServer _bluetoothServer;
         private BluetoothGattCharacteristic _characteristic;
+        private BluetoothGattCharacteristic _characteristic2;
         private BleEventArgs et;
         public BleServer(Context ctx)
         {
@@ -38,10 +39,16 @@ namespace BLE202.Droid
                 GattServiceType.Primary);
             _characteristic = new BluetoothGattCharacteristic(UUID.FromString("d8de624e-140f-4a22-8594-e2216b84a5f2"), GattProperty.Read | GattProperty.Notify | GattProperty.Write, GattPermission.Read | GattPermission.Write);
             _characteristic.AddDescriptor(new BluetoothGattDescriptor(UUID.FromString("28765900-7498-4bd4-aa9e-46c4a4fb7b07"),
-                    GattDescriptorPermission.Read | GattDescriptorPermission.Write));
+                     GattDescriptorPermission.Write | GattDescriptorPermission.Read));
 
             service.AddCharacteristic(_characteristic);
 
+
+            _characteristic = new BluetoothGattCharacteristic(UUID.FromString("d8de624e-140f-4a22-8594-e2216b84a5f3"), GattProperty.Read | GattProperty.Notify | GattProperty.Write, GattPermission.Read | GattPermission.Write);
+            _characteristic.AddDescriptor(new BluetoothGattDescriptor(UUID.FromString("28765900-7498-4bd4-aa9e-46c4a4fb7b08"),
+                    GattDescriptorPermission.Write | GattDescriptorPermission.Read));
+
+            service.AddCharacteristic(_characteristic);
             _bluetoothServer.AddService(service);
             
             _bluettothServerCallback.CharacteristicReadRequest += _bluettothServerCallback_CharacteristicReadRequest;
